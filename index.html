@@ -57,10 +57,11 @@
     .demeter-box { border-color: #238636; }
     .demeter-title{ color: #56d364; }
 
-    /* 6-Column Spreadsheet Layout */
+   /* 6-Column Spreadsheet Layout with a narrow first column */
     .rewards-list {
       display: grid;
-      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      /* First column is 60px */
+      grid-template-columns: 60px repeat(5, minmax(120px, 1fr));
       gap: 8px;
     }
 
