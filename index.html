@@ -78,29 +78,44 @@
       justify-content: center;
       min-height: 40px;
       word-wrap: break-word;
+      transition: background-color 0.2s, color 0.2s;
     }
 
     /* Highlighting Style for First Row & First Column Labels */
     .reward-item.axis-label {
-      background: #30363d;
+      background: #30363d !important;
       border-color: #8b949e;
-      color: #ffffff;
+      color: #ffffff !important;
       font-weight: 600;
     }
 
     /* Blank cell layout control */
     .reward-item.empty-cell {
-      background: transparent;
+      background: transparent !important;
       border: 1px dashed rgba(48, 54, 61, 0.3);
-      color: transparent;
+      color: transparent !important;
     }
+
+    /* DYNAMIC HIGHLIGHTING PROFILES */
+    .hl-accessory      { background-color: #1f425c; color: #76c7ff; border-color: #31648a; }
+    .hl-arenatoken     { background-color: #4a2323; color: #ff8585; border-color: #733b3b; }
+    .hl-material       { background-color: #3b2d23; color: #d4a373; border-color: #5c4737; }
+    .hl-monsterremains { background-color: #e6edf3; color: #0d1117; border-color: #ffffff; font-weight: bold; }
+    .hl-orns           { background-color: #0d2a5c; color: #58a6ff; border-color: #1f57b3; }
+    .hl-proofs         { background-color: #423b1c; color: #f2cc60; border-color: #695e31; }
+    .hl-potions        { background-color: #4a2a3a; color: #ff9ebb; border-color: #73435b; }
+    .hl-skeletonkey    { background-color: #3d444d; color: #dbedff; border-color: #57606a; }
+    .hl-weapon         { background-color: #133a1b; color: #56d364; border-color: #235e2f; }
+    .hl-astralseed     { background-color: #1b4728; color: #7ee787; border-color: #2b6b3b; }
+    .hl-summoningitem  { background-color: #321f47; color: #d3b3ee; border-color: #533575; }
+    .hl-ornateitem     { background-color: #6e1c18; color: #ffa199; border-color: #a62c26; font-weight: bold; }
   </style>
 </head>
 <body>
 
   <header>
     <h1 id="week-display">Monument Rewards</h1>
-    <h2> By Truffles:</h2>
+    <h2 id="date-display">Loading dates...</h2>
   </header>
 
   <div class="monument-grid">
@@ -126,7 +141,29 @@
   </div>
 
   <script>
+    // CRITICAL CONFIGURATION: Replace this link with your absolute live Google Apps Script Web App URL
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxdFKngD-4VYHLkShs-9n04WZmpENwgkI0Hjheve-FmkUh0aCVlTG3h6Iy_LOjdMyXjLw/exec";
+
+    // Dictionary mapping cell words to target CSS highlight classes
+    const colorRules = {
+      "accessory": "hl-accessory",
+      "arena tokens": "hl-arenatoken",
+      "arena token": "hl-arenatoken",
+      "materials": "hl-material",
+      "material": "hl-material",
+      "monster remains": "hl-monsterremains",
+      "orns": "hl-orns",
+      "proofs": "hl-proofs",
+      "proof": "hl-proofs",
+      "potions": "hl-potions",
+      "potion": "hl-potions",
+      "skeleton keys": "hl-skeletonkey",
+      "skeleton key": "hl-skeletonkey",
+      "weapon": "hl-weapon",
+      "astralseed": "hl-astralseed",
+      "summoning item": "hl-summoningitem",
+      "ornate item": "hl-ornateitem"
+    };
 
     window.onload = function() {
       fetchData();
@@ -135,9 +172,7 @@
     function fetchData() {
       fetch(WEB_APP_URL)
         .then(response => {
-          if (!response.ok) {
-            throw new Error("Network response was not stable: " + response.statusText);
-          }
+          if (!response.ok) throw new Error("Network response error: " + response.statusText);
           return response.json();
         })
         .then(data => populateDashboard(data))
@@ -145,16 +180,13 @@
     }
 
     function populateDashboard(data) {
-      if (!data) {
-        showError("The spreadsheet API returned absolutely no data structure.");
-        return;
-      }
-      if (data.error) {
-        showError(data.error);
+      if (!data || data.error) {
+        showError(data ? data.error : "No data structure received.");
         return;
       }
 
       document.getElementById('week-display').innerText = "Week " + (data.week || "??") + " Monument Rewards";
+      document.getElementById('date-display').innerText = data.dates || "Dates Unavailable";
 
       if (data.ithra) renderBox("ithra-rewards", data.ithra);
       if (data.thor) renderBox("thor-rewards", data.thor);
@@ -167,7 +199,6 @@
       if (!container) return;
       container.innerHTML = ""; 
       
-      // Force the top-left origin cell to read "Floor"
       if (rows.length > 0 && rows[0].length > 0) {
         rows[0][0] = "Floor";
       }
@@ -179,14 +210,19 @@
           
           if (cleanVal === "") {
             itemDiv.classList.add('reward-item', 'empty-cell');
-            itemDiv.innerText = "";
           } else {
             itemDiv.classList.add('reward-item');
             itemDiv.innerText = cleanVal; 
 
-            // Highlight rules for index axis framing headers
+            // Axis priority check: labels stay structural slate gray
             if (rowIndex === 0 || colIndex === 0) {
               itemDiv.classList.add('axis-label');
+            } else {
+              // Apply reward color rules by looking up lowercase string match
+              const matchKey = cleanVal.toLowerCase();
+              if (colorRules[matchKey]) {
+                itemDiv.classList.add(colorRules[matchKey]);
+              }
             }
           }
           
@@ -196,7 +232,7 @@
     }
 
     function showBackendError(err) {
-      showError("API Transmission Failure: Is the Web App set to 'Anyone' access? Details: " + err.message);
+      showError("API Connection Failure: " + err.message);
     }
 
     function showError(message) {
