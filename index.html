@@ -195,7 +195,7 @@
       }
 
       document.getElementById('week-display').innerText = "Week " + (data.week || "??") + " Monument Rewards";
-      document.getElementById('date-display').innerText = data.dates || "Dates Unavailable";
+      /* document.getElementById('date-display').innerText = data.dates || "Dates Unavailable"; */ /*Remove comment out once date range is ready */
 
       if (data.ithra) renderBox("ithra-rewards", data.ithra);
       if (data.thor) renderBox("thor-rewards", data.thor);
