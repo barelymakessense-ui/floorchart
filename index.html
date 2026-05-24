@@ -170,6 +170,15 @@
     };
 
     function fetchData() {
+      // Ensure the DOM body is fully ready before making the API request
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", executeFetch);
+      } else {
+        executeFetch();
+      }
+    }
+
+    function executeFetch() {
       fetch(WEB_APP_URL)
         .then(response => {
           if (!response.ok) throw new Error("Network response error: " + response.statusText);
