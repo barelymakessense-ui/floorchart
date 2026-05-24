@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orna Monument Rewards Tracker</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      padding: 20px;
+      margin: 0;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 { margin: 0; color: #ffffff; font-size: 2.2em; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    h2 { margin: 5px 0 0; color: #58a6ff; font-weight: 400; font-size: 1.2em; }
+
+    /* Layout grid for the 4 Monuments */
+    .monument-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Individual Monument Panels */
+    .monument-box {
+      background: #161b22;
+      border: 2px solid #30363d;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+      overflow-x: auto;
+    }
+    .monument-title {
+      font-size: 1.6em;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid rgba(255,255,255,0.1);
+    }
+
+    /* Elemental Border Colors */
+    .ithra-box   { border-color: #1f6feb; }
+    .ithra-title { color: #58a6ff; }
+    .thor-box    { border-color: #d29922; }
+    .thor-title  { color: #f2cc60; }
+    .vulcan-box  { border-color: #f85149; }
+    .vulcan-title{ color: #ff7b72; }
+    .demeter-box { border-color: #238636; }
+    .demeter-title{ color: #56d364; }
+
+    /* 6-Column Spreadsheet Layout */
+    .rewards-list {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    /* Standard Grid Cells */
+    .reward-item {
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 12px 8px;
+      font-size: 0.85em;
+      color: #e6edf3;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      word-wrap: break-word;
+    }
+
+    /* Highlighting Style for First Row & First Column Labels */
+    .reward-item.axis-label {
+      background: #30363d;
+      border-color: #8b949e;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Blank cell layout control */
+    .reward-item.empty-cell {
+      background: transparent;
+      border: 1px dashed rgba(48, 54, 61, 0.3);
+      color: transparent;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1 id="week-display">Monument Rewards</h1>
+    <h2>Current Rotations</h2>
+  </header>
+
+  <div class="monument-grid">
+    <div class="monument-box ithra-box">
+      <div class="monument-title ithra-title">Ithra</div>
+      <div class="rewards-list" id="ithra-rewards">Loading layout...</div>
+    </div>
+
+    <div class="monument-box thor-box">
+      <div class="monument-title thor-title">Thor</div>
+      <div class="rewards-list" id="thor-rewards">Loading layout...</div>
+    </div>
+
+    <div class="monument-box vulcan-box">
+      <div class="monument-title vulcan-title">Vulcan</div>
+      <div class="rewards-list" id="vulcan-rewards">Loading layout...</div>
+    </div>
+
+    <div class="monument-box demeter-box">
+      <div class="monument-title demeter-title">Demeter</div>
+      <div class="rewards-list" id="demeter-rewards">Loading layout...</div>
+    </div>
+  </div>
+
+  <script>
+    // CRITICAL CONFIGURATION: Replace this link with your absolute live Google Apps Script Web App URL
+    const WEB_APP_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID_HERE/exec";
+
+    window.onload = function() {
+      fetchData();
+    };
+
+    function fetchData() {
+      fetch(WEB_APP_URL)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Network response was not stable: " + response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => populateDashboard(data))
+        .catch(err => showBackendError(err));
+    }
+
+    function populateDashboard(data) {
+      if (!data) {
+        showError("The spreadsheet API returned absolutely no data structure.");
+        return;
+      }
+      if (data.error) {
+        showError(data.error);
+        return;
+      }
+
+      document.getElementById('week-display').innerText = "Week " + (data.week || "??") + " Monument Rewards";
+
+      if (data.ithra) renderBox("ithra-rewards", data.ithra);
+      if (data.thor) renderBox("thor-rewards", data.thor);
+      if (data.vulcan) renderBox("vulcan-rewards", data.vulcan);
+      if (data.demeter) renderBox("demeter-rewards", data.demeter);
+    }
+
+    function renderBox(elementId, rows) {
+      const container = document.getElementById(elementId);
+      if (!container) return;
+      container.innerHTML = ""; 
+      
+      // Force the top-left origin cell to read "Floor"
+      if (rows.length > 0 && rows[0].length > 0) {
+        rows[0][0] = "Floor";
+      }
+
+      rows.forEach((row, rowIndex) => {
+        row.forEach((cellValue, colIndex) => {
+          const cleanVal = cellValue ? cellValue.toString().trim() : "";
+          const itemDiv = document.createElement('div');
+          
+          if (cleanVal === "") {
+            itemDiv.classList.add('reward-item', 'empty-cell');
+            itemDiv.innerText = "";
+          } else {
+            itemDiv.classList.add('reward-item');
+            itemDiv.innerText = cleanVal; 
+
+            // Highlight rules for index axis framing headers
+            if (rowIndex === 0 || colIndex === 0) {
+              itemDiv.classList.add('axis-label');
+            }
+          }
+          
+          container.appendChild(itemDiv);
+        });
+      });
+    }
+
+    function showBackendError(err) {
+      showError("API Transmission Failure: Is the Web App set to 'Anyone' access? Details: " + err.message);
+    }
+
+    function showError(message) {
+      const grid = document.querySelector('.monument-grid');
+      if (grid) {
+        grid.style.gridTemplateColumns = "1fr";
+        grid.innerHTML = `
+          <div class="monument-box" style="border-color: #f85149; text-align: center; font-size: 1.2em; color: #ff7b72;">
+            <strong>System Connection Error:</strong><br>${message}
+          </div>`;
+      }
+    }
+  </script>
+
+</body>
+</html>
