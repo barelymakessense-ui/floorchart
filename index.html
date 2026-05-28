@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Foorchart: Orna Monument Rewards</title>
+  <title>Floorchart: Orna Monument Rewards</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -35,7 +35,7 @@
       border-radius: 12px;
       padding: 20px;
       box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-      overflow-x: auto;
+      overflow-x: auto; /* Fallback for very narrow devices */
     }
     .monument-title {
       font-size: 1.6em;
@@ -82,7 +82,7 @@
       transition: background-color 0.2s, color 0.2s;
     }
 
-/* Highlighting Style for First Row & First Column Labels */
+    /* Highlighting Style for First Row & First Column Labels */
     .reward-item.axis-label {
       background: transparent !important;
       border: none !important;
@@ -111,6 +111,37 @@
     .hl-summoningitem  { background-color: #321f47; color: #d3b3ee; border-color: #533575; }
     .hl-ornateitem     { background-color: #6e1c18; color: #ffa199; border-color: #a62c26; font-weight: bold; }
     .hl-rare-material  { background-color: #4c1d70; color: #e1b3ff; border-color: #8a3cd9; font-weight: 600; }
+
+    /* MOBILE SCALE OPTIMIZATIONS (For screens smaller than 640px) */
+    @media (max-width: 640px) {
+      body {
+        padding: 10px;
+      }
+      header {
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+      h2 {
+        font-size: 1em;
+      }
+      .monument-box {
+        padding: 10px;
+        border-radius: 8px;
+      }
+      /* Reduce grid minimum size so the 6 columns can squish closer together safely */
+      .rewards-list {
+        grid-template-columns: 45px repeat(5, minmax(50px, 1fr));
+        gap: 4px;
+      }
+      /* Shrink padding and font size slightly so text fits inside the smaller grid elements */
+      .reward-item {
+        padding: 6px 2px;
+        font-size: 0.72em;
+        min-height: 34px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -118,7 +149,7 @@
   <header>
     <h1>Floorchart</h1>
     <h2 id="week-display">Monument Rewards</h2>
-    <center>An Orna Monument Rewards Tracker By Truffles v1.2</center>
+    <center style="margin-top: 5px; font-size: 0.9em; color: #8b949e;">An Orna Monument Rewards Tracker By Truffles v1.2</center>
   </header>
 
   <div class="monument-grid">
@@ -144,10 +175,8 @@
   </div>
 
   <script>
-    // CRITICAL CONFIGURATION: Replace this link with your absolute live Google Apps Script Web App URL
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxdFKngD-4VYHLkShs-9n04WZmpENwgkI0Hjheve-FmkUh0aCVlTG3h6Iy_LOjdMyXjLw/exec";
 
-    // Dictionary mapping cell words to target CSS highlight classes
     const colorRules = {
       "accessory": "hl-accessory",
       "arena tokens": "hl-arenatoken",
@@ -181,7 +210,6 @@
     };
 
     function fetchData() {
-      // Ensure the DOM body is fully ready before making the API request
       if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", executeFetch);
       } else {
@@ -206,7 +234,6 @@
       }
 
       document.getElementById('week-display').innerText = "Week " + (data.week || "??") + " Monument Rewards";
-      /* document.getElementById('date-display').innerText = data.dates || "Dates Unavailable"; */ /*Remove comment out once date range is ready */
 
       if (data.ithra) renderBox("ithra-rewards", data.ithra);
       if (data.thor) renderBox("thor-rewards", data.thor);
@@ -234,11 +261,9 @@
             itemDiv.classList.add('reward-item');
             itemDiv.innerText = cleanVal; 
 
-            // Axis priority check: labels stay structural slate gray
             if (rowIndex === 0 || colIndex === 0) {
               itemDiv.classList.add('axis-label');
             } else {
-              // Apply reward color rules by looking up lowercase string match
               const matchKey = cleanVal.toLowerCase();
               if (colorRules[matchKey]) {
                 itemDiv.classList.add(colorRules[matchKey]);
