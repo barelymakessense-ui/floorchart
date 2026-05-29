@@ -3,9 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#0d1117">
   <title>Floorchart: Orna Monument Rewards</title>
   <style>
     body {
@@ -38,16 +35,52 @@
       border-radius: 12px;
       padding: 20px;
       box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-      overflow-x: auto; /* Fallback for very narrow devices */
     }
-    .monument-title {
-      font-size: 1.6em;
-      font-weight: bold;
-      text-align: center;
+    
+    /* Interactive Flex Header for Collapsing */
+    .monument-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
       margin-top: 0;
       margin-bottom: 20px;
       padding-bottom: 8px;
       border-bottom: 2px solid rgba(255,255,255,0.1);
+      user-select: none;
+    }
+    
+    .monument-title {
+      font-size: 1.6em;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    /* Chevron Toggle Indicator */
+    .toggle-arrow {
+      font-size: 1.4em;
+      font-weight: bold;
+      transition: transform 0.3s ease;
+      color: #8b949e;
+    }
+    
+    /* Collapsed state modifier classes */
+    .monument-box.collapsed .toggle-arrow {
+      transform: rotate(-90deg);
+    }
+    
+    .monument-box.collapsed .collapsible-wrapper {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+    }
+
+    /* Smooth Collapsible Content Wrapper */
+    .collapsible-wrapper {
+      max-height: 2000px; /* High threshold to allow layout grid text expanding */
+      opacity: 1;
+      transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), opacity 0.3s ease;
+      overflow-x: auto; /* Maintains scroll protection for table scaling */
     }
 
     /* Elemental Border Colors */
@@ -60,12 +93,12 @@
     .demeter-box { border-color: #238636; }
     .demeter-title{ color: #56d364; }
 
-   /* 6-Column Spreadsheet Layout with a narrow first column */
+    /* 6-Column Spreadsheet Layout with a narrow first column */
     .rewards-list {
       display: grid;
-      /* First column is 60px */
       grid-template-columns: 60px repeat(5, minmax(100px, 1fr));
       gap: 8px;
+      padding-bottom: 5px; /* Tiny buffer for side scrollbars if needed */
     }
 
     /* Standard Grid Cells */
@@ -117,28 +150,18 @@
 
     /* MOBILE SCALE OPTIMIZATIONS (For screens smaller than 640px) */
     @media (max-width: 640px) {
-      body {
-        padding: 10px;
-      }
-      header {
-        margin-bottom: 20px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-      h2 {
-        font-size: 1em;
-      }
-      .monument-box {
-        padding: 10px;
-        border-radius: 8px;
-      }
-      /* Reduce grid minimum size so the 6 columns can squish closer together safely */
+      body { padding: 10px; }
+      header { margin-bottom: 20px; }
+      h1 { font-size: 1.8em; }
+      h2 { font-size: 1em; }
+      .monument-box { padding: 12px; border-radius: 8px; }
+      .monument-header { margin-bottom: 12px; }
+      .monument-title { font-size: 1.3em; }
+      .toggle-arrow { font-size: 1.1em; }
       .rewards-list {
         grid-template-columns: 45px repeat(5, minmax(50px, 1fr));
         gap: 4px;
       }
-      /* Shrink padding and font size slightly so text fits inside the smaller grid elements */
       .reward-item {
         padding: 6px 2px;
         font-size: 0.72em;
@@ -148,7 +171,6 @@
   </style>
 </head>
 <body>
-
   <header>
     <h1>Floorchart</h1>
     <h2 id="week-display">Monument Rewards</h2>
@@ -156,24 +178,44 @@
   </header>
 
   <div class="monument-grid">
-    <div class="monument-box ithra-box">
-      <div class="monument-title ithra-title">Ithra</div>
-      <div class="rewards-list" id="ithra-rewards">Loading layout...</div>
+    <div class="monument-box ithra-box" id="ithra-box">
+      <div class="monument-header" onclick="toggleMonument('ithra-box')">
+        <div class="monument-title ithra-title">Ithra</div>
+        <div class="toggle-arrow">▾</div>
+      </div>
+      <div class="collapsible-wrapper">
+        <div class="rewards-list" id="ithra-rewards">Loading layout...</div>
+      </div>
     </div>
 
-    <div class="monument-box thor-box">
-      <div class="monument-title thor-title">Thor</div>
-      <div class="rewards-list" id="thor-rewards">Loading layout...</div>
+    <div class="monument-box thor-box" id="thor-box">
+      <div class="monument-header" onclick="toggleMonument('thor-box')">
+        <div class="monument-title thor-title">Thor</div>
+        <div class="toggle-arrow">▾</div>
+      </div>
+      <div class="collapsible-wrapper">
+        <div class="rewards-list" id="thor-rewards">Loading layout...</div>
+      </div>
     </div>
 
-    <div class="monument-box vulcan-box">
-      <div class="monument-title vulcan-title">Vulcan</div>
-      <div class="rewards-list" id="vulcan-rewards">Loading layout...</div>
+    <div class="monument-box vulcan-box" id="vulcan-box">
+      <div class="monument-header" onclick="toggleMonument('vulcan-box')">
+        <div class="monument-title vulcan-title">Vulcan</div>
+        <div class="toggle-arrow">▾</div>
+      </div>
+      <div class="collapsible-wrapper">
+        <div class="rewards-list" id="vulcan-rewards">Loading layout...</div>
+      </div>
     </div>
 
-    <div class="monument-box demeter-box">
-      <div class="monument-title demeter-title">Demeter</div>
-      <div class="rewards-list" id="demeter-rewards">Loading layout...</div>
+    <div class="monument-box demeter-box" id="demeter-box">
+      <div class="monument-header" onclick="toggleMonument('demeter-box')">
+        <div class="monument-title demeter-title">Demeter</div>
+        <div class="toggle-arrow">▾</div>
+      </div>
+      <div class="collapsible-wrapper">
+        <div class="rewards-list" id="demeter-rewards">Loading layout...</div>
+      </div>
     </div>
   </div>
 
@@ -211,6 +253,14 @@
     window.onload = function() {
       fetchData();
     };
+
+    /* Collapsible Functional Toggle Logic */
+    function toggleMonument(boxId) {
+      const box = document.getElementById(boxId);
+      if (box) {
+        box.classList.toggle('collapsed');
+      }
+    }
 
     function fetchData() {
       if (document.readyState === "loading") {
@@ -294,6 +344,5 @@
       }
     }
   </script>
-
 </body>
 </html>
