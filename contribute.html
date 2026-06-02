@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floorchart: Contributor Guide</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      padding: 20px;
+      margin: 0;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    h1 { margin: 0; color: #ffffff; font-size: 2.2em; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    h2 { margin: 5px 0 0; color: #58a6ff; font-weight: 400; font-size: 1.2em; }
+
+    /* --- SIDE NAV & HAMBURGER STYLES --- */
+    .menu-btn {
+      position: absolute;
+      top: 0;
+      left: 10px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 100;
+    }
+    .menu-btn span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background-color: #c9d1d9;
+      border-radius: 2px;
+    }
+    .nav-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(2px);
+      z-index: 998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .nav-overlay.open { opacity: 1; pointer-events: auto; }
+    .side-nav {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100%;
+      background-color: #161b22;
+      border-right: 1px solid #30363d;
+      box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+      z-index: 999;
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-sizing: border-box;
+      padding: 30px 20px;
+    }
+    .side-nav.open { left: 0; }
+    .side-nav h3 { color: #ffffff; margin-top: 0; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+    .nav-links { list-style: none; padding: 0; margin: 20px 0 0 0; display: flex; flex-direction: column; gap: 12px; }
+    .nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #c9d1d9;
+      text-decoration: none;
+      padding: 12px;
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .nav-links a:hover { background: #30363d; color: #58a6ff; border-color: #58a6ff; transform: translateX(3px); }
+    
+    /* Content Layout Container */
+    .content-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #161b22;
+      border: 2px solid #30363d;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    h3 { color: #ffffff; font-size: 1.5em; margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;}
+    p { line-height: 1.6; color: #e6edf3; }
+    ol { padding-left: 20px; color: #e6edf3; }
+    li { margin-bottom: 12px; line-height: 1.5; }
+    
+    .highlight-box {
+      background: #21262d;
+      border: 1px solid #58a6ff;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 25px;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 10px; }
+      header { margin-bottom: 20px; padding-top: 45px; }
+      .menu-btn { top: 10px; left: 10px; }
+      h1 { font-size: 1.8em; }
+      h2 { font-size: 1em; }
+      .content-container { padding: 15px; border-radius: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="menu-btn" onclick="toggleNav()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+
+  <nav class="side-nav" id="sideNav">
+    <h3>Navigation</h3>
+    <ul class="nav-links">
+      <li><a href="index.html">🗺️ Monument Board</a></li>
+      <li><a href="contribute.html">✍️ Become a Contributor</a></li>
+      <li><a href="https://discord.gg/YOUR-LINK-HERE" target="_blank">💬 Join our Discord</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <h1>Contributor Guide</h1>
+    <h2>Help us Map out the Rewards</h2>
+  </header>
+
+  <div class="content-container">
+    <h3>How to Become a Data Contributor</h3>
+    <p>Floorchart stays accurate every week because players like you scout out and log item drops across the Monuments. If you want to help keep the tracker live, here is how you can get involved:</p>
+    
+    <ol>
+      <li><strong>Request Access:</strong> Request to become a contributor <a href="">here</a></li>
+      <li><strong>Update the Sheet:</strong> Authorized contributors get direct editing access to the tracking sheet, which updates this public dashboard instantly.</li>
+    </ol>
+  </div>
+
+  <script>
+    function toggleNav() {
+      document.getElementById('sideNav').classList.toggle('open');
+      document.getElementById('navOverlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
