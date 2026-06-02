@@ -15,9 +15,114 @@
     header {
       text-align: center;
       margin-bottom: 40px;
+      position: relative; /* Contextual anchor for top alignment adjustments */
     }
     h1 { margin: 0; color: #ffffff; font-size: 2.2em; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     h2 { margin: 5px 0 0; color: #58a6ff; font-weight: 400; font-size: 1.2em; }
+
+    /* --- SIDE NAV & HAMBURGER STYLES --- */
+    .menu-btn {
+      position: absolute;
+      top: 0;
+      left: 10px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 100;
+      transition: background-color 0.2s;
+    }
+    .menu-btn:hover { background: #21262d; }
+    .menu-btn span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background-color: #c9d1d9;
+      border-radius: 2px;
+    }
+
+    /* Backdrop Overlay background */
+    .nav-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(2px);
+      z-index: 998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .nav-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Side Panel Drawer Drawer Container */
+    .side-nav {
+      position: fixed;
+      top: 0;
+      left: -280px; /* Initially hidden hidden off screen */
+      width: 280px;
+      height: 100%;
+      background-color: #161b22;
+      border-right: 1px solid #30363d;
+      box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+      z-index: 999;
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-sizing: border-box;
+      padding: 30px 20px;
+    }
+    .side-nav.open {
+      left: 0;
+    }
+    .side-nav h3 {
+      color: #ffffff;
+      margin-top: 0;
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 10px;
+      font-size: 1.4em;
+    }
+    .nav-links {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #c9d1d9;
+      text-decoration: none;
+      padding: 12px;
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .nav-links a:hover {
+      background: #30363d;
+      color: #58a6ff;
+      border-color: #58a6ff;
+      transform: translateX(3px);
+    }
+    .nav-links a.discord-link {
+      border-color: #5865F2;
+    }
+    .nav-links a.discord-link:hover {
+      background: #5865F2;
+      color: #ffffff;
+    }
 
     /* Layout grid for the 4 Monuments */
     .monument-grid {
@@ -77,10 +182,10 @@
 
     /* Smooth Collapsible Content Wrapper */
     .collapsible-wrapper {
-      max-height: 2000px; /* High threshold to allow layout grid text expanding */
+      max-height: 2000px; 
       opacity: 1;
       transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), opacity 0.3s ease;
-      overflow-x: auto; /* Maintains scroll protection for table scaling */
+      overflow-x: auto; 
     }
 
     /* Elemental Border Colors */
@@ -98,7 +203,7 @@
       display: grid;
       grid-template-columns: 60px repeat(5, minmax(100px, 1fr));
       gap: 8px;
-      padding-bottom: 5px; /* Tiny buffer for side scrollbars if needed */
+      padding-bottom: 5px; 
     }
 
     /* Standard Grid Cells */
@@ -151,7 +256,8 @@
     /* MOBILE SCALE OPTIMIZATIONS (For screens smaller than 640px) */
     @media (max-width: 640px) {
       body { padding: 10px; }
-      header { margin-bottom: 20px; }
+      header { margin-bottom: 20px; padding-top: 45px; /* Offset to clear fixed/positioned buttons */}
+      .menu-btn { top: 10px; left: 10px; }
       h1 { font-size: 1.8em; }
       h2 { font-size: 1em; }
       .monument-box { padding: 12px; border-radius: 8px; }
@@ -171,6 +277,27 @@
   </style>
 </head>
 <body>
+
+  <!-- Drawer Menu Button Trigger -->
+  <div class="menu-btn" onclick="toggleNav()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- Dimmed Background Overlay Shield -->
+  <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+
+  <!-- Left Side Slide Out Drawer Menu -->
+  <nav class="side-nav" id="sideNav">
+    <h3>Floorchart</h3>
+    <ul class="nav-links">
+      <li><a href="index.html">🎁 Weekly Rewards</a></li>
+      <li><a href="contribute.html">✍️ Become a Contributor</a></li>
+      <li><a href="https://discord.gg/C3gFmaX5DG" target="_blank" class="discord-link">💬 Join our Discord</a></li>
+    </ul>
+  </nav>
+
   <header>
     <h1>Floorchart</h1>
     <h2 id="week-display">Monument Rewards</h2>
@@ -253,6 +380,12 @@
     window.onload = function() {
       fetchData();
     };
+
+    /* Nav Drawer Drawer Toggle Functional Mechanics */
+    function toggleNav() {
+      document.getElementById('sideNav').classList.toggle('open');
+      document.getElementById('navOverlay').classList.toggle('open');
+    }
 
     /* Collapsible Functional Toggle Logic */
     function toggleMonument(boxId) {
