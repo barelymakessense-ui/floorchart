@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floorchart: Discord Bot Integration</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      padding: 20px;
+      margin: 0;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    h1 { margin: 0; color: #ffffff; font-size: 2.2em; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    h2 { margin: 5px 0 0; color: #58a6ff; font-weight: 400; font-size: 1.2em; }
+
+    /* --- SIDE NAV & HAMBURGER STYLES --- */
+    .menu-btn {
+      position: absolute;
+      top: 0;
+      left: 10px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 100;
+      transition: background-color 0.2s;
+    }
+    .menu-btn:hover { background: #21262d; }
+    .menu-btn span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background-color: #c9d1d9;
+      border-radius: 2px;
+    }
+
+    /* Backdrop Overlay background */
+    .nav-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(2px);
+      z-index: 998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .nav-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Side Panel Drawer Container */
+    .side-nav {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100%;
+      background-color: #161b22;
+      border-right: 1px solid #30363d;
+      box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+      z-index: 999;
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-sizing: border-box;
+      padding: 30px 20px;
+    }
+    .side-nav.open {
+      left: 0;
+    }
+    .side-nav h3 {
+      color: #ffffff;
+      margin-top: 0;
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 10px;
+      font-size: 1.4em;
+    }
+    .nav-links {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #c9d1d9;
+      text-decoration: none;
+      padding: 12px;
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .nav-links a:hover {
+      background: #30363d;
+      color: #58a6ff;
+      border-color: #58a6ff;
+      transform: translateX(3px);
+    }
+    .nav-links a.discord-link {
+      border-color: #5865F2;
+    }
+    .nav-links a.discord-link:hover {
+      background: #5865F2;
+      color: #ffffff;
+    }
+
+    /* Main Content Container Layout */
+    .content-container {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    /* Primary Showcase Panel */
+    .showcase-box {
+      background: #161b22;
+      border: 2px solid #5865F2; /* Discord Indigo accent border */
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+
+    /* Preview Image Configuration */
+    .bot-preview-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      margin-bottom: 20px;
+    }
+
+    /* Call To Action Announcement Box */
+    .cta-message {
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 20px;
+      font-size: 1.2em;
+      line-height: 1.5;
+      color: #e6edf3;
+    }
+
+    .cta-message a {
+      color: #58a6ff;
+      text-decoration: none;
+      font-weight: bold;
+      border-bottom: 1px dashed #58a6ff;
+    }
+    .cta-message a:hover {
+      color: #79c0ff;
+      border-bottom-style: solid;
+    }
+
+    .highlight-username {
+      color: #ff7b72; /* Warm coral accent text for your handle */
+      font-weight: bold;
+    }
+
+    /* MOBILE SCALE OPTIMIZATIONS */
+    @media (max-width: 640px) {
+      body { padding: 10px; }
+      header { margin-bottom: 20px; padding-top: 45px; }
+      .menu-btn { top: 10px; left: 10px; }
+      h1 { font-size: 1.8em; }
+      h2 { font-size: 1em; }
+      .showcase-box { padding: 15px; }
+      .cta-message { font-size: 1em; padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="menu-btn" onclick="toggleNav()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+
+  <nav class="side-nav" id="sideNav">
+    <h3>Floorchart</h3>
+    <ul class="nav-links">
+      <li><a href="index.html">🎁 Weekly Rewards</a></li>
+      <li><a href="bot.html" style="color: #58a6ff; border-color: #58a6ff;">🤖 Discord Bot</a></li>
+      <li><a href="contribute.html">✍️ Become a Contributor</a></li>
+      <li><a href="https://discord.gg/C3gFmaX5DG" target="_blank" class="discord-link">💬 Join our Discord</a></li>
+      <li><i>Floorchart v1.5</i></li>
+    </ul>
+  </nav>
+
+  <header>
+    <h1>Floorchart Bot</h1>
+    <h2>Automated Server Integration</h2>
+    <center style="margin-top: 5px; font-size: 0.9em; color: #8b949e;">Bring Live Monument Pacing Updates Straight To Your Guild</center>
+  </header>
+
+  <div class="content-container">
+    <div class="showcase-box">
+      
+      <img src="1000002234.jpg" alt="Floorchart Discord Bot Embed Preview" class="bot-preview-img">
+      
+      <div class="cta-message">
+        Want the discord bot for your Channel?<br>
+        Join the <a href="https://discord.gg/C3gFmaX5DG" target="_blank">Floorchart discord</a> and DM <span class="highlight-username">Truffles</span> for more info.
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    /* Nav Drawer Toggle Logic */
+    function toggleNav() {
+      document.getElementById('sideNav').classList.toggle('open');
+      document.getElementById('navOverlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
