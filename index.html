@@ -56,28 +56,34 @@
       border-color: #8b949e;
       background: #30363d;
     }
-    /* Active Toggle State highlights the button matching your CSS categories */
+    
+    /* Active Toggle States matching your explicit styles */
+    .filter-btn.active[data-type="accessory"] { background-color: #1f425c; color: #76c7ff; border-color: #31648a; }
+    .filter-btn.active[data-type="arena-token"] { background-color: #4a2323; color: #ff8585; border-color: #733b3b; }
+    .filter-btn.active[data-type="armor"] { background-color: #2b3a4a; color: #a5ccf5; border-color: #3e566f; }
+    .filter-btn.active[data-type="materials"] { background-color: #3b2d23; color: #d4a373; border-color: #e5dad2; }
+    .filter-btn.active[data-type="rare-materials"] { background-color: #4c1d70; color: #e1b3ff; border-color: #8a3cd9; }
     .filter-btn.active[data-type="orns"] { background-color: #0d2a5c; color: #58a6ff; border-color: #1f57b3; }
     .filter-btn.active[data-type="proofs"] { background-color: #423b1c; color: #f2cc60; border-color: #695e31; }
     .filter-btn.active[data-type="skeleton-keys"] { background-color: #3d444d; color: #dbedff; border-color: #57606a; }
-    .filter-btn.active[data-type="rare-materials"] { background-color: #4c1d70; color: #e1b3ff; border-color: #8a3cd9; }
-    .filter-btn.active[data-type="summoning-items"] { background-color: #321f47; color: #d3b3ee; border-color: #533575; }
-    .filter-btn.active[data-type="arena-tokens"] { background-color: #4a2323; color: #ff8585; border-color: #733b3b; }
-    .filter-btn.active[data-type="monster-remains"] { background-color: #402407; color: #d4a373; border-color: #4D2D09; }
+    .filter-btn.active[data-type="weapon"] { background-color: #133a1b; color: #56d364; border-color: #235e2f; }
 
-    /* DIMMING ENGINE: When a filter is active, lower opacity on everything EXCEPT the target */
+    /* DIMMING ENGINE */
     .monument-grid.filtering-active .reward-item:not(.axis-label):not(.empty-cell) {
       opacity: 0.25;
       filter: grayscale(40%);
     }
-    /* Keep matched elements fully bright */
+    
+    /* Target Isolate Filters */
+    .monument-grid.filter-accessory .hl-accessory,
+    .monument-grid.filter-arena-token .hl-arenatoken,
+    .monument-grid.filter-armor .hl-armor,
+    .monument-grid.filter-materials .hl-material,
+    .monument-grid.filter-rare-materials .hl-rare-material,
     .monument-grid.filter-orns .hl-orns,
     .monument-grid.filter-proofs .hl-proofs,
     .monument-grid.filter-skeleton-keys .hl-skeletonkey,
-    .monument-grid.filter-rare-materials .hl-rare-material,
-    .monument-grid.filter-summoning-items .hl-summoningitem,
-    .monument-grid.filter-arena-tokens .hl-arenatoken,
-    .monument-grid.filter-monster-remains .hl-monsterremains {
+    .monument-grid.filter-weapon .hl-weapon {
       opacity: 1 !important;
       filter: none !important;
       box-shadow: 0 0 8px rgba(255,255,255,0.15);
@@ -254,8 +260,10 @@
     .reward-item.axis-label { background: transparent !important; border: none !important; color: #8b949e !important; font-weight: 600; }
     .reward-item.empty-cell { background: transparent !important; border: 1px dashed rgba(48, 54, 61, 0.3); color: transparent !important; }
 
+    /* STYLING CLASSES FOR REWARD BLOCKS */
     .hl-accessory      { background-color: #1f425c; color: #76c7ff; border-color: #31648a; }
     .hl-arenatoken     { background-color: #4a2323; color: #ff8585; border-color: #733b3b; }
+    .hl-armor          { background-color: #1b2631; color: #85b3e6; border-color: #283e54; }
     .hl-material       { background-color: #3b2d23; color: #d4a373; border-color: #E5DAD2; }
     .hl-monsterremains { background-color: #402407; color: #d4a373; border-color: #4D2D09; }
     .hl-orns           { background-color: #0d2a5c; color: #58a6ff; border-color: #1f57b3; }
@@ -312,15 +320,17 @@
     <div style="margin-top: 5px; font-size: 0.9em; color: #8b949e;">An Orna Monument Rewards Tracker By Truffles</div>
   </header>
 
-  <!-- 🛠️ HIGHLIGHT CONTROLS TOOLBAR -->
+  <!-- 🛠️ REVISED TARGET TOOLBAR -->
   <div class="filter-toolbar">
+    <div class="filter-btn" data-type="accessory" onclick="toggleRewardFilter('accessory', this)">🛡️ Accessory</div>
+    <div class="filter-btn" data-type="arena-token" onclick="toggleRewardFilter('arena-token', this)">🛑 Arena Token</div>
+    <div class="filter-btn" data-type="armor" onclick="toggleRewardFilter('armor', this)">🎽 Armor</div>
+    <div class="filter-btn" data-type="materials" onclick="toggleRewardFilter('materials', this)">🪵 Materials</div>
+    <div class="filter-btn" data-type="rare-materials" onclick="toggleRewardFilter('rare-materials', this)">🔮 Rare Materials</div>
     <div class="filter-btn" data-type="orns" onclick="toggleRewardFilter('orns', this)">🔵 Orns</div>
     <div class="filter-btn" data-type="proofs" onclick="toggleRewardFilter('proofs', this)">🟡 Proofs</div>
     <div class="filter-btn" data-type="skeleton-keys" onclick="toggleRewardFilter('skeleton-keys', this)">🔑 Skeleton Keys</div>
-    <div class="filter-btn" data-type="rare-materials" onclick="toggleRewardFilter('rare-materials', this)">💜 Rare Materials</div>
-    <div class="filter-btn" data-type="summoning-items" onclick="toggleRewardFilter('summoning-items', this)">🔮 Summoning Items</div>
-    <div class="filter-btn" data-type="arena-tokens" onclick="toggleRewardFilter('arena-tokens', this)">🛑 Arena Tokens</div>
-    <div class="filter-btn" data-type="monster-remains" onclick="toggleRewardFilter('monster-remains', this)">🦴 Monster Remains</div>
+    <div class="filter-btn" data-type="weapon" onclick="toggleRewardFilter('weapon', this)">⚔️ Weapon</div>
   </div>
 
   <div class="monument-grid" id="monumentGridContainer">
@@ -410,6 +420,7 @@
       "accessory": "hl-accessory",
       "arena tokens": "hl-arenatoken",
       "arena token": "hl-arenatoken",
+      "armor": "hl-armor",
       "materials": "hl-material",
       "material": "hl-material",
       "monster remains": "hl-monsterremains",
@@ -449,19 +460,14 @@
       if (box) box.classList.toggle('collapsed');
     }
 
-    /* 🏎️ ENGINE: Handles highlighting filters and opacity drops */
     function toggleRewardFilter(type, btnElement) {
       const grid = document.getElementById('monumentGridContainer');
       const targetClass = `filter-${type}`;
       const isAlreadyActive = btnElement.classList.contains('active');
 
-      // Clear out existing filter attributes across all toolbar buttons
       document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      
-      // Strip old classes from the main grid container
       grid.className = "monument-grid";
 
-      // If it wasn't active, engage the filter
       if (!isAlreadyActive) {
         btnElement.classList.add('active');
         grid.classList.add('filtering-active', targetClass);
