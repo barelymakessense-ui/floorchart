@@ -9,7 +9,6 @@
   <meta property="og:url" content="https://floorchart.top" />
   <meta property="og:type" content="website" />
   
-  
   <title>Orna Monument Rewards</title>
   <style>
     body {
@@ -21,11 +20,69 @@
     }
     header {
       text-align: center;
-      margin-bottom: 40px;
-      position: relative; /* Contextual anchor for top alignment adjustments */
+      margin-bottom: 25px;
+      position: relative; 
     }
     h1 { margin: 0; color: #ffffff; font-size: 2.2em; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     h2 { margin: 5px 0 0; color: #58a6ff; font-weight: 400; font-size: 1.2em; }
+
+    /* --- HIGHLIGHT TOOLBAR STYLES --- */
+    .filter-toolbar {
+      max-width: 1200px;
+      margin: 0 auto 25px auto;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .filter-btn {
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85em;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .filter-btn:hover {
+      border-color: #8b949e;
+      background: #30363d;
+    }
+    /* Active Toggle State highlights the button matching your CSS categories */
+    .filter-btn.active[data-type="orns"] { background-color: #0d2a5c; color: #58a6ff; border-color: #1f57b3; }
+    .filter-btn.active[data-type="proofs"] { background-color: #423b1c; color: #f2cc60; border-color: #695e31; }
+    .filter-btn.active[data-type="skeleton-keys"] { background-color: #3d444d; color: #dbedff; border-color: #57606a; }
+    .filter-btn.active[data-type="rare-materials"] { background-color: #4c1d70; color: #e1b3ff; border-color: #8a3cd9; }
+    .filter-btn.active[data-type="summoning-items"] { background-color: #321f47; color: #d3b3ee; border-color: #533575; }
+    .filter-btn.active[data-type="arena-tokens"] { background-color: #4a2323; color: #ff8585; border-color: #733b3b; }
+    .filter-btn.active[data-type="monster-remains"] { background-color: #402407; color: #d4a373; border-color: #4D2D09; }
+
+    /* DIMMING ENGINE: When a filter is active, lower opacity on everything EXCEPT the target */
+    .monument-grid.filtering-active .reward-item:not(.axis-label):not(.empty-cell) {
+      opacity: 0.25;
+      filter: grayscale(40%);
+    }
+    /* Keep matched elements fully bright */
+    .monument-grid.filter-orns .hl-orns,
+    .monument-grid.filter-proofs .hl-proofs,
+    .monument-grid.filter-skeleton-keys .hl-skeletonkey,
+    .monument-grid.filter-rare-materials .hl-rare-material,
+    .monument-grid.filter-summoning-items .hl-summoningitem,
+    .monument-grid.filter-arena-tokens .hl-arenatoken,
+    .monument-grid.filter-monster-remains .hl-monsterremains {
+      opacity: 1 !important;
+      filter: none !important;
+      box-shadow: 0 0 8px rgba(255,255,255,0.15);
+      transform: scale(1.02);
+    }
 
     /* --- SIDE NAV & HAMBURGER STYLES --- */
     .menu-btn {
@@ -52,7 +109,6 @@
       border-radius: 2px;
     }
 
-    /* Backdrop Overlay background */
     .nav-overlay {
       position: fixed;
       top: 0;
@@ -66,16 +122,12 @@
       pointer-events: none;
       transition: opacity 0.3s ease;
     }
-    .nav-overlay.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .nav-overlay.open { opacity: 1; pointer-events: auto; }
 
-    /* Side Panel Drawer Drawer Container */
     .side-nav {
       position: fixed;
       top: 0;
-      left: -280px; /* Initially hidden hidden off screen */
+      left: -280px; 
       width: 280px;
       height: 100%;
       background-color: #161b22;
@@ -86,9 +138,7 @@
       box-sizing: border-box;
       padding: 30px 20px;
     }
-    .side-nav.open {
-      left: 0;
-    }
+    .side-nav.open { left: 0; }
     .side-nav h3 {
       color: #ffffff;
       margin-top: 0;
@@ -123,15 +173,9 @@
       border-color: #58a6ff;
       transform: translateX(3px);
     }
-    .nav-links a.discord-link {
-      border-color: #5865F2;
-    }
-    .nav-links a.discord-link:hover {
-      background: #5865F2;
-      color: #ffffff;
-    }
+    .nav-links a.discord-link { border-color: #5865F2; }
+    .nav-links a.discord-link:hover { background: #5865F2; color: #ffffff; }
 
-    /* Layout grid for the 4 Monuments */
     .monument-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -140,7 +184,6 @@
       margin: 0 auto;
     }
 
-    /* Individual Monument Panels */
     .monument-box {
       background: #161b22;
       border: 2px solid #30363d;
@@ -149,7 +192,6 @@
       box-shadow: 0 6px 12px rgba(0,0,0,0.3);
     }
     
-    /* Header for Collapsing */
     .monument-header {
       display: flex;
       justify-content: space-between;
@@ -162,32 +204,12 @@
       user-select: none;
     }
     
-    .monument-title {
-      font-size: 1.6em;
-      font-weight: bold;
-      margin: 0;
-    }
-
-    /* Chevron Toggle Indicator */
-    .toggle-arrow {
-      font-size: 1.4em;
-      font-weight: bold;
-      transition: transform 0.3s ease;
-      color: #8b949e;
-    }
+    .monument-title { font-size: 1.6em; font-weight: bold; margin: 0; }
+    .toggle-arrow { font-size: 1.4em; font-weight: bold; transition: transform 0.3s ease; color: #8b949e; }
     
-    /* Collapsed state modifier classes */
-    .monument-box.collapsed .toggle-arrow {
-      transform: rotate(-90deg);
-    }
-    
-    .monument-box.collapsed .collapsible-wrapper {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-    }
+    .monument-box.collapsed .toggle-arrow { transform: rotate(-90deg); }
+    .monument-box.collapsed .collapsible-wrapper { max-height: 0; opacity: 0; overflow: hidden; }
 
-    /* Smooth Collapsible Content Wrapper */
     .collapsible-wrapper {
       max-height: 2000px; 
       opacity: 1;
@@ -195,7 +217,6 @@
       overflow-x: auto; 
     }
 
-    /* Elemental Border Colors */
     .ithra-box   { border-color: #1f6feb; }
     .ithra-title { color: #58a6ff; }
     .thor-box    { border-color: #d29922; }
@@ -206,10 +227,7 @@
     .demeter-title{ color: #56d364; }
     .event-box    { border-color: #e2FFFF;}
     .event-title  { color: #e9FFFF;}
-    #event-box2   { color: #a3ff00;}
-    #event-title2 { color: #466d00;}
 
-    /* 6-Column Spreadsheet Layout with a narrow first column */
     .rewards-list {
       display: grid;
       grid-template-columns: 60px repeat(5, minmax(100px, 1fr));
@@ -217,7 +235,6 @@
       padding-bottom: 5px; 
     }
 
-    /* Standard Grid Cells */
     .reward-item {
       background: #21262d;
       border: 1px solid #30363d;
@@ -231,25 +248,12 @@
       justify-content: center;
       min-height: 40px;
       word-wrap: break-word;
-      transition: background-color 0.2s, color 0.2s;
+      transition: background-color 0.2s, color 0.2s, opacity 0.25s ease, transform 0.2s ease, filter 0.25s ease;
     }
 
-    /* Highlighting Style for First Row & First Column Labels */
-    .reward-item.axis-label {
-      background: transparent !important;
-      border: none !important;
-      color: #8b949e !important;
-      font-weight: 600;
-    }
+    .reward-item.axis-label { background: transparent !important; border: none !important; color: #8b949e !important; font-weight: 600; }
+    .reward-item.empty-cell { background: transparent !important; border: 1px dashed rgba(48, 54, 61, 0.3); color: transparent !important; }
 
-    /* Blank cell layout control */
-    .reward-item.empty-cell {
-      background: transparent !important;
-      border: 1px dashed rgba(48, 54, 61, 0.3);
-      color: transparent !important;
-    }
-
-    /* DYNAMIC HIGHLIGHTING PROFILES */
     .hl-accessory      { background-color: #1f425c; color: #76c7ff; border-color: #31648a; }
     .hl-arenatoken     { background-color: #4a2323; color: #ff8585; border-color: #733b3b; }
     .hl-material       { background-color: #3b2d23; color: #d4a373; border-color: #E5DAD2; }
@@ -264,10 +268,11 @@
     .hl-ornateitem     { background-color: #6e1c18; color: #ffa199; border-color: #a62c26; font-weight: bold; }
     .hl-rare-material  { background-color: #4c1d70; color: #e1b3ff; border-color: #8a3cd9; font-weight: 600; }
 
-    /* MOBILE SCALE OPTIMIZATIONS (For screens smaller than 640px) */
     @media (max-width: 640px) {
       body { padding: 10px; }
-      header { margin-bottom: 20px; padding-top: 45px; /* Offset to clear fixed/positioned buttons */}
+      header { margin-bottom: 15px; padding-top: 45px; }
+      .filter-toolbar { padding: 8px; gap: 6px; margin-bottom: 15px; }
+      .filter-btn { padding: 4px 8px; font-size: 0.78em; }
       .menu-btn { top: 10px; left: 10px; }
       h1 { font-size: 1.8em; }
       h2 { font-size: 1em; }
@@ -275,49 +280,50 @@
       .monument-header { margin-bottom: 12px; }
       .monument-title { font-size: 1.3em; }
       .toggle-arrow { font-size: 1.1em; }
-      .rewards-list {
-        grid-template-columns: 45px repeat(5, minmax(50px, 1fr));
-        gap: 4px;
-      }
-      .reward-item {
-        padding: 6px 2px;
-        font-size: 0.72em;
-        min-height: 34px;
-      }
+      .rewards-list { grid-template-columns: 45px repeat(5, minmax(50px, 1fr)); gap: 4px; }
+      .reward-item { padding: 6px 2px; font-size: 0.72em; min-height: 34px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Drawer Menu Button Trigger -->
   <div class="menu-btn" onclick="toggleNav()">
     <span></span>
     <span></span>
     <span></span>
   </div>
 
-  <!-- Dimmed Background Overlay Shield -->
   <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
 
-  <!-- Left Side Slide Out Drawer Menu -->
- <nav class="side-nav" id="sideNav">
-  <h3>Floorchart</h3>
-  <ul class="nav-links">
-    <li><a href="index.html" style="color: #ffffff; border-color: #991111;">🎁 Weekly Rewards</a></li>
-    <li><a href="bot.html" style="color: #ffffff; border-color: #58a6ff;">🤖 Discord Bot</a></li>
-    <li><a href="contribute.html" style="color: #ffffff; border-color: #f09001;">✍️ Become a Contributor</a></li>
-    <li><a href="https://discord.gg/C3gFmaX5DG" target="_blank" class="discord-link">💬 Join our Discord</a></li>
-    <li><i>Floorchart v1.5</i></li>
-  </ul>
-</nav>
+  <nav class="side-nav" id="sideNav">
+    <h3>Floorchart</h3>
+    <ul class="nav-links">
+      <li><a href="index.html" style="color: #ffffff; border-color: #991111;">🎁 Weekly Rewards</a></li>
+      <li><a href="bot.html" style="color: #ffffff; border-color: #58a6ff;">🤖 Discord Bot</a></li>
+      <li><a href="contribute.html" style="color: #ffffff; border-color: #f09001;">✍️ Become a Contributor</a></li>
+      <li><a href="https://discord.gg/C3gFmaX5DG" target="_blank" class="discord-link">💬 Join our Discord</a></li>
+      <li><i>Floorchart v1.5</i></li>
+    </ul>
+  </nav>
 
   <header>
     <h1>Floorchart</h1>
     <h2 id="week-display">Monument Rewards</h2>
-    <center style="margin-top: 5px; font-size: 0.9em; color: #8b949e;">An Orna Monument Rewards Tracker By Truffles</center>
+    <div style="margin-top: 5px; font-size: 0.9em; color: #8b949e;">An Orna Monument Rewards Tracker By Truffles</div>
   </header>
 
-  <div class="monument-grid">
+  <!-- 🛠️ HIGHLIGHT CONTROLS TOOLBAR -->
+  <div class="filter-toolbar">
+    <div class="filter-btn" data-type="orns" onclick="toggleRewardFilter('orns', this)">🔵 Orns</div>
+    <div class="filter-btn" data-type="proofs" onclick="toggleRewardFilter('proofs', this)">🟡 Proofs</div>
+    <div class="filter-btn" data-type="skeleton-keys" onclick="toggleRewardFilter('skeleton-keys', this)">🔑 Skeleton Keys</div>
+    <div class="filter-btn" data-type="rare-materials" onclick="toggleRewardFilter('rare-materials', this)">💜 Rare Materials</div>
+    <div class="filter-btn" data-type="summoning-items" onclick="toggleRewardFilter('summoning-items', this)">🔮 Summoning Items</div>
+    <div class="filter-btn" data-type="arena-tokens" onclick="toggleRewardFilter('arena-tokens', this)">🛑 Arena Tokens</div>
+    <div class="filter-btn" data-type="monster-remains" onclick="toggleRewardFilter('monster-remains', this)">🦴 Monster Remains</div>
+  </div>
+
+  <div class="monument-grid" id="monumentGridContainer">
     <div class="monument-box ithra-box" id="ithra-box">
       <div class="monument-header" onclick="toggleMonument('ithra-box')">
         <div class="monument-title ithra-title">Ithra</div>
@@ -358,14 +364,13 @@
       </div>
     </div>
     
-      <div class="monument-box event-box" id="event-box">
-        <div class="monument-header" onclick="toggleMonument('event-box')">
-          <div class="monument-title event-title">Event Monument (🌊Nimue's Lake)</div>
-          <div class="toggle-arrow">▾</div>
-        </div>
-        <div class="collapsible-wrapper">
-          <div class="rewards-list">
-          
+    <div class="monument-box event-box" id="event-box">
+      <div class="monument-header" onclick="toggleMonument('event-box')">
+        <div class="monument-title event-title">Event Monument (🌊Nimue's Lake)</div>
+        <div class="toggle-arrow">▾</div>
+      </div>
+      <div class="collapsible-wrapper">
+        <div class="rewards-list">
           <div class="reward-item axis-label">Floor</div>
           <div class="reward-item axis-label">Reward 1</div>
           <div class="reward-item axis-label">Reward 2</div>
@@ -381,7 +386,7 @@
           <div class="reward-item">Nostrum</div>
           
           <div class="reward-item axis-label">3</div>
-          <div class="reward-item hl-proos">Proofs</div>
+          <div class="reward-item hl-proofs">Proofs</div>
           <div class="reward-item hl-orns">Orns</div>
           <div class="reward-item hl-material">Materials</div>
           <div class="reward-item">Ortanite</div>
@@ -396,102 +401,8 @@
         </div>
       </div>
     </div>
-    
-   <!-- <div class="monument-box event-box" id="event-box2">
-        <div class="monument-header" onclick="toggleMonument('event-box2')">
-        <div class="monument-title event-title">Monument to the Murk</div>
-        <div class="toggle-arrow">▾</div>
-      </div>
-      <div class="collapsible-wrapper">
-        <div class="rewards-list">
-          
-          <div class="reward-item axis-label">Floor</div>
-          <div class="reward-item axis-label">Reward 1</div>
-          <div class="reward-item axis-label">Reward 2</div>
-          <div class="reward-item axis-label">Reward 3</div>
-          <div class="reward-item axis-label">Material</div>
-          <div class="reward-item axis-label">Potion</div>
-          
-          <div class="reward-item axis-label">2</div>
-          <div class="reward-item hl-proofs">Proofs</div>
-          <div class="reward-item hl-potions">Potions</div>
-          <div class="reward-item hl-orns">Orns</div>
-          <div class="reward-item empty-cell"></div>
-          <div class="reward-item">Panacea</div>
-          
-          <div class="reward-item axis-label">3</div>
-          <div class="reward-item hl-skeletonkey">Skeleton Keys</div>
-          <div class="reward-item hl-accessory">Accessory</div>
-          <div class="reward-item hl-potions">Potions</div>
-          <div class="reward-item empty-cell"></div>
-          <div class="reward-item">Nostrum</div>
-          
-          <div class="reward-item axis-label">4</div>
-          <div class="reward-item hl-orns">Orns</div>
-          <div class="reward-item hl-arenatoken">Arena Tokens</div>
-          <div class="reward-item hl-potions">Potions</div>
-          <div class="reward-item empty-cell"></div>
-          <div class="reward-item">Nostrum</div>
-
-          <div class="reward-item axis-label">5</div>
-          <div class="reward-item hl-arenatoken">Arena Tokens</div>
-          <div class="reward-item hl-monsterremains">Monster Remains</div>
-          <div class="reward-item hl-orns">Orns</div>
-          <div class="reward-item empty-cell"></div>
-          <div class="reward-item empty-cell"></div>
-          
-          <div class="reward-item axis-label">6</div>
-          <div class="reward-item hl-material">Material</div>
-          <div class="reward-item hl-orns">Orns</div>
-          <div class="reward-item hl-potions">Potions</div>
-          <div class="reward-item">Iron</div>
-          <div class="reward-item">Ambrosia</div>
-
-          <div class="reward-item axis-label">7</div>
-          <div class="reward-item hl-arenatoken">Arena Tokens</div>
-          <div class="reward-item hl-skeletonkey">Skeleton Keys</div>
-          <div class="reward-item hl-weapon">Weapon</div>
-          <div class="reward-item empty-cell"></div>
-          <div class="reward-item empty-cell"></div>
-
-          <div class="reward-item axis-label">8</div>
-          <div class="reward-item hl-weapon">Weapon</div>
-          <div class="reward-item hl-arenatoken">Arena Tokens</div>
-          <div class="reward-item hl-material">Materials</div>
-          <div class="reward-item h1-rare-material">P. Draconite</div>
-          <div class="reward-item empty-cell"></div>
-
-          <div class="reward-item axis-label">9</div>
-          <div class="reward-item hl-monsterremains">Monster Remains</div>
-          <div class="reward-item hl-orns">Orns</div>
-          <div class="reward-item hl-skeletonkey">Skeleton Keys</div>
-          <div class="reward-item empty-cell"></div>
-          <div class="reward-item empty-cell"></div>
-
-          <div class="reward-item axis-label">10</div>
-          <div class="reward-item hl-arenatoken">Arena Tokens</div>
-          <div class="reward-item hl-orns">Orns</div>
-          <div class="reward-item hl-potions">Potions</div>
-          <div class="reward-item empty-cell"></div>
-          <div class="reward-item">Ichor</div>
-
-          <div class="reward-item axis-label">11</div>
-          <div class="reward-item hl-material">Materials</div>
-          <div class="reward-item hl-weapon">Weapon</div>
-          <div class="reward-item hl-accessory">Accessory</div>
-          <div class="reward-item">P. Lightstone</div>
-          <div class="reward-item empty-cell"></div>
-
-          <div class="reward-item axis-label">12</div>
-          <div class="reward-item hl-potions">Potions</div>
-          <div class="reward-item hl-orns">Orns</div>
-          <div class="reward-item hl-arenatoken">Arena Tokens</div>
-          <div class="reward-item empty-cell"></div>
-          <div class="reward-item">Nostrum</div>
-
-        </div>-->
-      </div>
   </div>
+
   <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyY7Tv_hkYrYCgfvKiy9mGOShuMYXIGBMfRTDX8l3LnzKNEk7XCgTsQcOXZ_ogYh5a9gg/exec";
 
@@ -528,17 +439,32 @@
       fetchData();
     };
 
-    /* Nav Drawer Drawer Toggle Functional Mechanics */
     function toggleNav() {
       document.getElementById('sideNav').classList.toggle('open');
       document.getElementById('navOverlay').classList.toggle('open');
     }
 
-    /* Collapsible Functional Toggle Logic */
     function toggleMonument(boxId) {
       const box = document.getElementById(boxId);
-      if (box) {
-        box.classList.toggle('collapsed');
+      if (box) box.classList.toggle('collapsed');
+    }
+
+    /* 🏎️ ENGINE: Handles highlighting filters and opacity drops */
+    function toggleRewardFilter(type, btnElement) {
+      const grid = document.getElementById('monumentGridContainer');
+      const targetClass = `filter-${type}`;
+      const isAlreadyActive = btnElement.classList.contains('active');
+
+      // Clear out existing filter attributes across all toolbar buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      
+      // Strip old classes from the main grid container
+      grid.className = "monument-grid";
+
+      // If it wasn't active, engage the filter
+      if (!isAlreadyActive) {
+        btnElement.classList.add('active');
+        grid.classList.add('filtering-active', targetClass);
       }
     }
 
@@ -603,7 +529,6 @@
               }
             }
           }
-          
           container.appendChild(itemDiv);
         });
       });
