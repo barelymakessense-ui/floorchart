@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floorchart: Contributor Guide</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      padding: 20px;
+      margin: 0;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    h1 { margin: 0; color: #ffffff; font-size: 2.2em; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    h2 { margin: 5px 0 0; color: #58a6ff; font-weight: 400; font-size: 1.2em; }
+
+    /* --- SIDE NAV & HAMBURGER STYLES --- */
+    .menu-btn {
+      position: absolute;
+      top: 0;
+      left: 10px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 100;
+    }
+    .menu-btn span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background-color: #c9d1d9;
+      border-radius: 2px;
+    }
+    .nav-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(2px);
+      z-index: 998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .nav-overlay.open { opacity: 1; pointer-events: auto; }
+    .side-nav {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100%;
+      background-color: #161b22;
+      border-right: 1px solid #30363d;
+      box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+      z-index: 999;
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-sizing: border-box;
+      padding: 30px 20px;
+    }
+    .side-nav.open { left: 0; }
+    .side-nav h3 { color: #ffffff; margin-top: 0; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+    .nav-links { list-style: none; padding: 0; margin: 20px 0 0 0; display: flex; flex-direction: column; gap: 12px; }
+    .nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #c9d1d9;
+      text-decoration: none;
+      padding: 12px;
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .nav-links a:hover { background: #30363d; color: #58a6ff; border-color: #58a6ff; transform: translateX(3px); }
+    
+    /* Content Layout Container */
+    .content-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #161b22;
+      border: 2px solid #30363d;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    h3 { color: #ffffff; font-size: 1.5em; margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;}
+    p { line-height: 1.6; color: #e6edf3; }
+    ol { padding-left: 20px; color: #e6edf3; }
+    li { margin-bottom: 12px; line-height: 1.5; }
+    
+    .highlight-box {
+      background: #21262d;
+      border: 1px solid #58a6ff;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 25px;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 10px; }
+      header { margin-bottom: 20px; padding-top: 45px; }
+      .menu-btn { top: 10px; left: 10px; }
+      h1 { font-size: 1.8em; }
+      h2 { font-size: 1em; }
+      .content-container { padding: 15px; border-radius: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="menu-btn" onclick="toggleNav()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+
+ <nav class="side-nav" id="sideNav">
+  <h3>Floorchart</h3>
+  <ul class="nav-links">
+    <li><a href="index.html" style="color: #ffffff; border-color: #991111;">🎁 Weekly Rewards</a></li>
+    <li><a href="bot.html" style="color: #ffffff; border-color: #58a6ff;">🤖 Discord Bot</a></li>
+    <li><a href="contribute.html" style="color: #ffffff; border-color: #f09001;">✍️ Become a Contributor</a></li>
+    <li><a href="https://discord.gg/C3gFmaX5DG" target="_blank" class="discord-link">💬 Join our Discord</a></li>
+    <li><i>Floorchart v1.5</i></li>
+  </ul>
+</nav>
+
+  <header>
+    <h1>Terms of Service</h1>
+  </header>
+
+<div class="container">
+    <header>
+        <h1>Terms of Service</h1>
+        <div class="date">Last Updated: July 4, 2026</div>
+    </header>
+
+    <div class="disclaimer">
+        <p style="margin: 0; color: var(--text-main);"><strong>Disclaimer:</strong> This document is a general template. Depending on your jurisdiction and user data practices, you may want to consult a legal professional to ensure full compliance with privacy laws (such as GDPR or CCPA).</p>
+    </div>
+
+    <p>Welcome to <strong>Floorchart</strong> ("we," "our," or "us"). By inviting our Discord bot to your server or using our website, you agree to comply with and be bound by these Terms of Service. If you do not agree, please do not use our services.</p>
+
+    <section>
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing our website or using our Discord bot, you confirm that you are at least 13 years old (or the minimum age of digital consent in your country) and that you agree to these Terms, as well as the official Discord Terms of Service.</p>
+    </section>
+
+    <section>
+        <h2>2. Use of Services</h2>
+        <p>We grant you a non-exclusive, non-transferable, revocable license to use our flowchart tools and Discord bot for personal or community use, provided you follow these rules:</p>
+        <ul>
+            <li><strong>No Abuse:</strong> You may not use the bot or website to spam, crash servers, or exploit bugs.</li>
+            <li><strong>No Malicious Content:</strong> You may not use our flowchart tools to generate, store, or share content that is illegal, defamatory, or harmful.</li>
+            <li><strong>Reverse Engineering:</strong> You may not attempt to copy, modify, or decompile our bot’s code or website assets without explicit permission.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>3. Data & Privacy</h2>
+        <p>Your privacy matters to us.</p>
+        <ul>
+            <li><strong>What we collect:</strong> We may collect basic data necessary for the bot and website to function (e.g., Discord User IDs, Server IDs, and flowchart data you create).</li>
+            <li><strong>Data Deletion:</strong> You can request the deletion of your data at any time by joining our support server or reaching out via our contact channels.</li>
+        </ul>
+        <p>For more details, please review our <a href="/privacy">Privacy Policy</a>.</p>
+    </section>
+
+    <section>
+        <h2>4. Availability & Modifications</h2>
+        <p><strong>"As-Is" Basis:</strong> Our services are provided "as-is" and "as available." We do not guarantee that the bot or website will be online 100% of the time.</p>
+        <p><strong>Changes to Service:</strong> We reserve the right to modify, pause, or discontinue any feature of the bot or website at any time without prior notice.</p>
+        <p><strong>Changes to Terms:</strong> We may update these Terms occasionally. Continued use of the bot or website after updates constitutes acceptance of the new terms.</p>
+    </section>
+
+    <section>
+        <h2>5. Termination</h2>
+        <p>We reserve the right to block your access to the website or ban your Discord server/account from using the bot if you violate these Terms or Discord’s Community Guidelines.</p>
+    </section>
+
+    <section>
+        <h2>6. Limitation of Liability</h2>
+        <p>To the maximum extent permitted by law, the creators of Floorchart shall not be liable for any damages, data loss, or server disruptions resulting from the use or inability to use our services.</p>
+    </section>
+
+    <section>
+        <h2>7. Contact Us</h2>
+        <p>If you have any questions, complaints, or feedback regarding these Terms, please contact us via:</p>
+        <ul>
+            <li><strong>Discord Support Server:</strong> <a href="https://discord.gg/3YJsaGEyq" target="_blank">Insert Link Here</a></li>
+        </ul>
+    </section>
+</div>
+
+  <script>
+    function toggleNav() {
+      document.getElementById('sideNav').classList.toggle('open');
+      document.getElementById('navOverlay').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
